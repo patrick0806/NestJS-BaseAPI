@@ -9,7 +9,11 @@ import {
 import { SwaggerConfig } from '@config/swagger.config';
 
 import { API_BASE_PATH } from '@shared/constants';
-import { HttpExceptionFilter } from '@shared/filters';
+import { ValidationException } from '@shared/exceptions';
+import {
+  HttpExceptionFilter,
+  ValidationExceptionFilter,
+} from '@shared/filters';
 import { BuildResponseInterceptor } from '@shared/interceptors';
 
 import { AppModule } from './app.module';
@@ -23,14 +27,20 @@ async function bootstrap() {
   const swaggerConfig = new SwaggerConfig();
   swaggerConfig.setupSwagger(`${API_BASE_PATH}/docs`, app);
 
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new BuildResponseInterceptor());
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
+      exceptionFactory: (validationErrors) => {
+        throw new ValidationException(validationErrors);
+      },
     }),
+  );
+
+  app.useGlobalInterceptors(new BuildResponseInterceptor());
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new ValidationExceptionFilter(),
   );
 
   app.enableCors({

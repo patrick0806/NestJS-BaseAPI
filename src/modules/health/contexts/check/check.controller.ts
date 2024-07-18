@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { API_TAGS } from '@shared/constants';
 
@@ -10,6 +10,7 @@ import { CheckService } from './check.service';
 export class CheckController {
   constructor(private checkService: CheckService) {}
 
+  @ApiOperation({ summary: 'Health Check' })
   @Get()
   handle() {
     return this.checkService.execute();

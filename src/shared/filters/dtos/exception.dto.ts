@@ -1,6 +1,14 @@
-class Detail {
+export class ExceptionDetail {
   message: string;
   additionalProperties: Array<Record<string, any>>;
+
+  constructor(
+    message: string,
+    additionalProperties: Array<Record<string, any>>,
+  ) {
+    this.message = message;
+    this.additionalProperties = additionalProperties;
+  }
 }
 
 export class ExceptionDTO {
@@ -11,7 +19,7 @@ export class ExceptionDTO {
   transactionId: string | null;
   message: string;
   code?: string;
-  details?: Detail[];
+  details?: ExceptionDetail[];
 
   constructor(
     status: number,
@@ -19,7 +27,7 @@ export class ExceptionDTO {
     path: string,
     transactionId: string,
     message: string,
-    details?: Detail[],
+    details?: ExceptionDetail[],
   ) {
     this.timestamp = new Date().toISOString();
     this.status = status;
