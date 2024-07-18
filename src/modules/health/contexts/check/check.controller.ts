@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { API_TAGS } from '@shared/constants/apiTags';
+import { API_TAGS } from '@shared/constants';
 
 import { CheckService } from './check.service';
 

@@ -7,9 +7,9 @@ import {
 import { FastifyRequest } from 'fastify';
 import { map, Observable } from 'rxjs';
 
-import { HEADERS } from '@shared/constants/headers';
-import { IMetadaResponse } from '@shared/interfaces/response.interface';
-import { getHeader } from '@shared/utils/getHeader.util';
+import { HEADERS } from '@shared/constants';
+import { IMetadaResponse } from '@shared/interfaces';
+import { getHeader } from '@shared/utils';
 
 @Injectable()
 export class BuildResponseInterceptor implements NestInterceptor {

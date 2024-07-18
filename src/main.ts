@@ -1,5 +1,5 @@
 import helmet from '@fastify/helmet';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -8,9 +8,9 @@ import {
 
 import { SwaggerConfig } from '@config/swagger.config';
 
-import { API_BASE_PATH } from '@shared/constants/apiBasePath';
-import { HttpExceptionFilter } from '@shared/filters/httpException.filter';
-import { BuildResponseInterceptor } from '@shared/interceptors/buildResponse.interceptor';
+import { API_BASE_PATH } from '@shared/constants';
+import { HttpExceptionFilter } from '@shared/filters';
+import { BuildResponseInterceptor } from '@shared/interceptors';
 
 import { AppModule } from './app.module';
 
@@ -25,6 +25,13 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new BuildResponseInterceptor());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   app.enableCors({
     origin: process.env.NODE_ENV === 'production' ? 'https://referer.com' : '*',
