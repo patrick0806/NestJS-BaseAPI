@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { PathsObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { defaultResponses } from './defaultResponses.swagger';
-import { GlobalApiResponses } from './globalApiResponses.swagger';
 
 export class SwaggerConfig {
   static documentation = new DocumentBuilder()
@@ -16,18 +16,43 @@ export class SwaggerConfig {
     .addBearerAuth()
     .build();
 
-  private createDocument(app: INestApplication<any>) {
-    return SwaggerModule.createDocument(app, SwaggerConfig.documentation);
-  }
-
   setupSwagger(path: string, app: INestApplication<any>) {
     const document = this.createDocument(app);
-    GlobalApiResponses({
+    this.defineGlobalResponses({
       document,
       excludedPaths: ['/api/v1/health'],
       methods: ['get', 'post', 'put', 'patch', 'delete'],
       responses: defaultResponses,
     });
     SwaggerModule.setup(path, app, document);
+  }
+
+  private createDocument(app: INestApplication<any>) {
+    return SwaggerModule.createDocument(app, SwaggerConfig.documentation);
+  }
+
+  private defineGlobalResponses({
+    document,
+    excludedPaths,
+    methods,
+    responses,
+  }: {
+    document: OpenAPIObject;
+    excludedPaths: string[];
+    methods: string[];
+    responses: PathsObject;
+  }) {
+    for (const key in document.paths) {
+      if (!excludedPaths.includes(key)) {
+        methods.forEach((method) => {
+          if (document.paths[key][method]) {
+            document.paths[key][method].responses = {
+              ...responses,
+              ...document.paths[key][method].responses,
+            };
+          }
+        });
+      }
+    }
   }
 }
