@@ -6,7 +6,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 
-import { SwaggerConfig } from '@config/swagger.config';
+import { SwaggerConfig } from '@config/swagger/swagger.config';
 
 import { API_BASE_PATH } from '@shared/constants';
 import { ValidationException } from '@shared/exceptions';
@@ -54,6 +54,5 @@ async function bootstrap() {
 }
 bootstrap();
 //TODO - logger
-//TODO - error handling
-//TODO - validation
 //TODO - tests
+//Imrpove swagger auto generate error status dto;
