@@ -1,11 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+import { defaultResponses } from './defaultResponses.swagger';
+import { GlobalApiResponses } from './globalApiResponses.swagger';
+
 export class SwaggerConfig {
   static documentation = new DocumentBuilder()
     .setTitle('Referer api')
     .setVersion('1.0')
-    .addServer('/api/v1') //TODO - improve versioning swagger
     .setContact(
       'Patrick da Silva Nicezi',
       'https://github.com/patrick0806',
@@ -19,6 +21,13 @@ export class SwaggerConfig {
   }
 
   setupSwagger(path: string, app: INestApplication<any>) {
-    SwaggerModule.setup(path, app, this.createDocument(app));
+    const document = this.createDocument(app);
+    GlobalApiResponses({
+      document,
+      excludedPaths: ['/api/v1/health'],
+      methods: ['get', 'post', 'put', 'patch', 'delete'],
+      responses: defaultResponses,
+    });
+    SwaggerModule.setup(path, app, document);
   }
 }

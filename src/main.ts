@@ -24,6 +24,8 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
+  app.setGlobalPrefix(API_BASE_PATH);
+  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   const swaggerConfig = new SwaggerConfig();
   swaggerConfig.setupSwagger(`${API_BASE_PATH}/docs`, app);
 
@@ -46,8 +48,6 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.NODE_ENV === 'production' ? 'https://referer.com' : '*',
   });
-  app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
-  app.setGlobalPrefix(API_BASE_PATH);
   await app.register(helmet);
 
   await app.listen(process.env.PORT || 3000);
@@ -55,4 +55,3 @@ async function bootstrap() {
 bootstrap();
 //TODO - logger
 //TODO - tests
-//Imrpove swagger auto generate error status dto;
