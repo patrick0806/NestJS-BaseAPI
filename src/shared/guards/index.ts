@@ -1,1 +1,1 @@
-export { AuthGuard } from './auth.guard';
+export { JWTAuthGuard } from './jwtAuth.guard';

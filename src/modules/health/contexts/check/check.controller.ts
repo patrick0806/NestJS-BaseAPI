@@ -7,12 +7,12 @@ import { Public } from '@shared/decorators';
 import { CheckService } from './check.service';
 import { HealthCheckResponseDTO } from './dtos/response.dto';
 
+@Public()
 @ApiTags(API_TAGS.HEALTH)
 @Controller({ version: '1' })
 export class CheckController {
   constructor(private checkService: CheckService) {}
 
-  @Public()
   @ApiOperation({ summary: 'Health Check' })
   @ApiOkResponse({ description: 'Health Check', type: HealthCheckResponseDTO })
   @Get()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
-import { AuthGuard } from '@shared/guards';
+import { JWTAuthGuard } from '@shared/guards';
 
 import { AuthModule } from '@modules/auth/auth.module';
 import { HealthModule } from '@modules/health/health.module';
@@ -25,7 +25,7 @@ import { HealthModule } from '@modules/health/health.module';
   providers: [
     {
       provide: 'APP_GUARD',
-      useClass: AuthGuard,
+      useClass: JWTAuthGuard,
     },
   ],
 })

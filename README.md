@@ -46,3 +46,5 @@ To run this project in dev mode you need to follow these steps
 - API versioning
 - Debug mode in VSCode
 - All routes are protected by default
+- Health Check with terminus
+- Using Passport
