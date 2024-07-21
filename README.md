@@ -45,3 +45,4 @@ To run this project in dev mode you need to follow these steps
 - Arrogance
 - API versioning
 - Debug mode in VSCode
+- All routes are protected by default

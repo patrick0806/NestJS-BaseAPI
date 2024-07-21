@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { API_TAGS } from '@shared/constants';
+import { Public } from '@shared/decorators';
 
 import { CheckService } from './check.service';
 import { HealthCheckResponseDTO } from './dtos/response.dto';
@@ -11,6 +12,7 @@ import { HealthCheckResponseDTO } from './dtos/response.dto';
 export class CheckController {
   constructor(private checkService: CheckService) {}
 
+  @Public()
   @ApiOperation({ summary: 'Health Check' })
   @ApiOkResponse({ description: 'Health Check', type: HealthCheckResponseDTO })
   @Get()

@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 
+import { AuthGuard } from '@shared/guards';
+
 import { AuthModule } from '@modules/auth/auth.module';
 import { HealthModule } from '@modules/health/health.module';
 
@@ -20,6 +22,11 @@ import { HealthModule } from '@modules/health/health.module';
     ]),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: 'APP_GUARD',
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
