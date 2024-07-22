@@ -36,13 +36,12 @@ To run this project in dev mode you need to follow these steps
 - SWC (fast compiler)
 - Fastify
 - CORS and Helmet
-- Visits
+- Vitest
 - Docker Configuration
 - Prettier and eslint rules
 - Validations
 - Exception Handler
 - Base recorder (Winston)
-- Arrogance
 - API versioning
 - Debug mode in VSCode
 - All routes are protected by default
