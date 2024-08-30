@@ -13,10 +13,35 @@ So it is recommended that you know a little about this framework
 
 To run this project in dev mode you need to follow these steps
 
+### Create a database
+
+```bash
+docker run --name referer-postgres \
+    -p 5432:5432 \
+    -e POSTGRES_DB=referer \
+    -e POSTGRES_USER=postgres \
+    -e POSTGRES_PASSWORD=postgres \
+    -d postgres:16.2-alpine
+```
+
+if you want a base with started data you can run the seeds
+
+### Seeds
+
+```bash
+    npm run seed:initialData:dev
+```
+
 ### Install dependencies
 
 ```bash
  npm installation
+```
+
+## Run Migrations
+
+```bash
+    npm run migration:run
 ```
 
 ### Run project
