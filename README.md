@@ -47,3 +47,4 @@ To run this project in dev mode you need to follow these steps
 - All routes are protected by default
 - Health Check with terminus
 - Using Passport
+- Role validation (Role decorator) // like @Roles(ApplicationRole.ADMIN) in controller

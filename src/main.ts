@@ -41,8 +41,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new BuildResponseInterceptor());
   app.useGlobalFilters(
-    new HttpExceptionFilter(),
     new ValidationExceptionFilter(),
+    new HttpExceptionFilter(),
   );
 
   app.enableCors({
