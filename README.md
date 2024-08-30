@@ -48,3 +48,4 @@ To run this project in dev mode you need to follow these steps
 - Health Check with terminus
 - Using Passport
 - Role validation (Role decorator) // like @Roles(ApplicationRole.ADMIN) in controller
+- Typeorm Configs (Connections, Migrations, Seeds)
