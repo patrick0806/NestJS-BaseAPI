@@ -54,6 +54,8 @@ To run this project in dev mode you need to follow these steps
 
 - [NodeJS](https://nodejs.org/en/docs)
 - [NestJS](https://docs.nestjs.com/)
+- [SWC] (https://swc.rs/)
+- [Vitest] (https://vitest.dev/)
 
 # Project Structure
 
