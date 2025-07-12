@@ -8,7 +8,6 @@ import { FastifyRequest } from 'fastify';
 import { map, Observable } from 'rxjs';
 
 import { HEADERS } from '@shared/constants';
-import { IMetadaResponse } from '@shared/interfaces';
 import { LogBuilderService } from '@shared/providers';
 import { getHeader } from '@shared/utils';
 
@@ -23,16 +22,14 @@ export class BuildResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((params) => {
         const request = context.switchToHttp().getRequest<FastifyRequest>();
-        const metadata: IMetadaResponse = {
-          timestamp: new Date().toISOString(),
-          transactionId: getHeader(request.headers, HEADERS.TRANSACTION_ID),
-        };
 
         if (!request.url.includes('health')) {
           this.logger.build(
-            { ...params, level: 'info' },
             {
-              ...metadata,
+              ...params,
+              level: 'info',
+              timestamp: new Date().toISOString(),
+              transactionId: getHeader(request.headers, HEADERS.TRANSACTION_ID),
               path: request.url,
               method: request.method,
               statusCode: 200,
@@ -40,10 +37,7 @@ export class BuildResponseInterceptor implements NestInterceptor {
           );
         }
 
-        return {
-          meta: metadata,
-          content: params,
-        };
+        return params?.data || params;
       }),
     );
   }

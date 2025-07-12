@@ -42,8 +42,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         details: exceptionResponse,
         level:
           statusCode === HttpStatus.INTERNAL_SERVER_ERROR ? 'error' : 'warn',
-      },
-      {
         timestamp: new Date().toISOString(),
         method: request.method,
         path: request.url,

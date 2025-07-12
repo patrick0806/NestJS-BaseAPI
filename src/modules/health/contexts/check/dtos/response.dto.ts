@@ -1,19 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { MetaResponseDTO } from '@shared/dtos/MetaResponse.dto';
-
-class ContentDTO {
+export class HealthCheckResponseDTO {
   @ApiProperty({ example: 'OK' })
-  status: string;
+  status: Record<string, unknown>;
   @ApiProperty({ example: {} })
-  info: string;
+  info: Record<string, unknown>;
   @ApiProperty({ example: {} })
-  error: string;
+  error: Record<string, unknown>;
   @ApiProperty({ example: {} })
-  details: string;
-}
-
-export class HealthCheckResponseDTO extends MetaResponseDTO {
-  @ApiProperty({ type: ContentDTO })
-  content: ContentDTO;
+  details: Record<string, unknown>;
 }

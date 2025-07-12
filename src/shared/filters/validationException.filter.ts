@@ -41,8 +41,6 @@ export class ValidationExceptionFilter implements ExceptionFilter {
         message: exception.message,
         details: exceptionDeatils,
         level: 'warn',
-      },
-      {
         timestamp: new Date().toISOString(),
         method: request.method,
         path: request.url,

@@ -1,6 +1,5 @@
 import { createLogger, transports, Logger, format } from 'winston';
 
-import { IMetadaResponse } from '@shared/interfaces';
 import { ILogData, ILogParams } from '@shared/interfaces/log.interface';
 
 export class LogBuilderService {
@@ -35,21 +34,9 @@ export class LogBuilderService {
     return LogBuilderService.instance;
   }
 
-  public build(params: ILogParams, meta: IMetadaResponse) {
-    const { code, message, details, level } = params;
-    const { method, path, timestamp, transactionId, statusCode } = meta;
-    const log: ILogData = {
-      code,
-      message,
-      details,
-      level,
-      method,
-      statusCode,
-      path,
-      timestamp,
-      transactionId,
-    };
+  public build(params: ILogParams) {
+    const log: ILogData = { ...params } //TODO - add logic to calculate duration;
 
-    this.logger.log(level, JSON.stringify(log, null, 2));
+    this.logger.log(log.level, JSON.stringify(log, null, 2));
   }
 }
