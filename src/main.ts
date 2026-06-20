@@ -6,7 +6,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 
-import { SwaggerConfig } from '@config/swagger/swagger.config';
+import { ApiReferenceConfig } from '@config/apiReference/apiReference.config';
 
 import { API_BASE_PATH } from '@shared/constants';
 import { ValidationException } from '@shared/exceptions';
@@ -26,8 +26,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix(API_BASE_PATH);
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
-  const swaggerConfig = new SwaggerConfig();
-  swaggerConfig.setupSwagger(`${API_BASE_PATH}/docs`, app);
+  const apiReferenceConfig = new ApiReferenceConfig();
+  apiReferenceConfig.setupApiReference(`${API_BASE_PATH}/docs`, app);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -48,7 +48,18 @@ async function bootstrap() {
   app.enableCors({
     origin: process.env.NODE_ENV === 'production' ? 'https://referer.com' : '*',
   });
-  await app.register(helmet);
+  await app.register(helmet, {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [`'self'`],
+        scriptSrc: [`'self'`, `'unsafe-inline'`, 'https://cdn.jsdelivr.net'],
+        styleSrc: [`'self'`, `'unsafe-inline'`, 'https://cdn.jsdelivr.net'],
+        imgSrc: [`'self'`, 'data:', 'https://cdn.jsdelivr.net'],
+        fontSrc: [`'self'`, 'data:', 'https://cdn.jsdelivr.net'],
+        connectSrc: [`'self'`],
+      },
+    },
+  });
 
   await app.listen(process.env.PORT || 3000);
 }

@@ -1,10 +1,11 @@
+import { apiReference } from '@scalar/nestjs-api-reference';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { PathsObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
-import { defaultResponses } from './defaultResponses.swagger';
+import { defaultResponses } from './defaultResponses';
 
-export class SwaggerConfig {
+export class ApiReferenceConfig {
   static documentation = new DocumentBuilder()
     .setTitle('Referer api')
     .setVersion('1.0')
@@ -16,7 +17,7 @@ export class SwaggerConfig {
     .addBearerAuth()
     .build();
 
-  setupSwagger(path: string, app: INestApplication<any>) {
+  setupApiReference(path: string, app: INestApplication<any>) {
     const document = this.createDocument(app);
     this.defineGlobalResponses({
       document,
@@ -24,11 +25,18 @@ export class SwaggerConfig {
       methods: ['get', 'post', 'put', 'patch', 'delete'],
       responses: defaultResponses,
     });
-    SwaggerModule.setup(path, app, document);
+    app.use(
+      path,
+      apiReference({
+        content: document,
+        withFastify: true,
+        theme: 'nestjs',
+      }),
+    );
   }
 
   private createDocument(app: INestApplication<any>) {
-    return SwaggerModule.createDocument(app, SwaggerConfig.documentation);
+    return SwaggerModule.createDocument(app, ApiReferenceConfig.documentation);
   }
 
   private defineGlobalResponses({
