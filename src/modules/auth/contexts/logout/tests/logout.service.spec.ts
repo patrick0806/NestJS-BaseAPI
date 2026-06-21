@@ -4,7 +4,7 @@ import type { RefreshToken } from '@config/database/schema/refreshTokens';
 
 import { RefreshTokenRepository } from '@shared/repositories';
 
-import { LogoutService } from './logout.service';
+import { LogoutService } from '../logout.service';
 
 vi.mock('@shared/utils', () => ({
   generateRefreshToken: vi.fn(),

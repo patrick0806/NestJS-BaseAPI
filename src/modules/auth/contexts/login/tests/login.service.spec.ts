@@ -6,8 +6,8 @@ import { RefreshTokenRepository } from '@shared/repositories';
 
 import * as shared from '@shared/utils';
 
-import { LoginService } from './login.service';
-import { UsersRepository } from './users.repository';
+import { LoginService } from '../login.service';
+import { UsersRepository } from '../users.repository';
 
 
 const RAW_REFRESH = 'raw-refresh-token';
