@@ -1,12 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
-import {
-  PathsObject,
-  ResponseObject,
-} from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
 import { ExceptionDTO } from '@shared/filters/dtos/exception.dto';
 
-const badRequestResponse = {
+type DefaultResponses = Record<string, Record<string, unknown>>;
+
+const badRequestResponse: DefaultResponses = {
   '400': {
     description: 'The request did not match the Data Transfer Object.',
     content: {
@@ -34,10 +32,10 @@ const badRequestResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-const unauthorizedResponse = {
+const unauthorizedResponse: DefaultResponses = {
   '401': {
     description: 'Added token is invalid or token type is incorrect',
     content: {
@@ -54,10 +52,10 @@ const unauthorizedResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-const forbbidenResponse = {
+const forbbidenResponse: DefaultResponses = {
   '403': {
     description: 'The user does not have permission to access the resource',
     content: {
@@ -74,10 +72,10 @@ const forbbidenResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-const conflictResponse = {
+const conflictResponse: DefaultResponses = {
   '409': {
     description:
       'The request could not be completed due to a conflict with the current state of the target resource',
@@ -95,10 +93,10 @@ const conflictResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-const notFoundResponse = {
+const notFoundResponse: DefaultResponses = {
   '404': {
     description: 'The requested resource was not found',
     content: {
@@ -115,10 +113,10 @@ const notFoundResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-const internalServerErrorResponse = {
+const internalServerErrorResponse: DefaultResponses = {
   '500': {
     description: 'Internal server error',
     content: {
@@ -135,10 +133,10 @@ const internalServerErrorResponse = {
         },
       },
     },
-  } as ResponseObject,
+  },
 };
 
-export const defaultResponses: PathsObject = {
+export const defaultResponses: DefaultResponses = {
   ...badRequestResponse,
   ...unauthorizedResponse,
   ...forbbidenResponse,

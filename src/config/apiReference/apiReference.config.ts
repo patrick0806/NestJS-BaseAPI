@@ -1,9 +1,10 @@
-import { apiReference } from '@scalar/nestjs-api-reference';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
-import { PathsObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { apiReference } from '@scalar/nestjs-api-reference';
 
 import { defaultResponses } from './defaultResponses';
+
+type DefaultResponses = Record<string, Record<string, unknown>>;
 
 export class ApiReferenceConfig {
   static documentation = new DocumentBuilder()
@@ -30,7 +31,6 @@ export class ApiReferenceConfig {
       apiReference({
         content: document,
         withFastify: true,
-        theme: 'nestjs',
       }),
     );
   }
@@ -48,7 +48,7 @@ export class ApiReferenceConfig {
     document: OpenAPIObject;
     excludedPaths: string[];
     methods: string[];
-    responses: PathsObject;
+    responses: DefaultResponses;
   }) {
     for (const key in document.paths) {
       if (!excludedPaths.includes(key)) {
