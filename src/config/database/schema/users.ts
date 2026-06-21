@@ -1,16 +1,12 @@
-import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 
+import { baseEntity } from './base.entity';
+
 export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  ...baseEntity,
   email: varchar('email', { length: 255 }).notNull().unique(),
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp('updated_at', { withTimezone: true })
-    .defaultNow()
-    .notNull(),
 });
 
 export const InsertUserSchema = createInsertSchema(users);
