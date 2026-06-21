@@ -11,6 +11,107 @@ Quickly focus only on implementing business rules
 - npm 10+ (ships with Node 24).
 - **PostgreSQL** (local install, Docker, or cloud) reachable via `DATABASE_URL`.
 
+## After Cloning
+
+This template is designed to be cloned and rebranded for new projects. Follow these steps to rename and customize everything:
+
+### 1. Project name
+
+Rename the project in `package.json`:
+
+```json
+{
+  "name": "your-project-name-api"
+}
+```
+
+### 2. Database name
+
+Update the database name in these files:
+
+- **Root `.env`** (create from `.env.example`):
+  ```
+  DATABASE_URL=postgres://postgres:postgres@localhost:5432/your_db_name
+  DATABASE_NAME=your_db_name
+  ```
+- **`dev/.env`** (create from `dev/.env.example`):
+  ```
+  POSTGRES_DB=your_db_name
+  ```
+- **`dev/docker-compose.yml`** — update the healthcheck command:
+  ```yaml
+  healthcheck:
+    test: [CMD-SHELL, pg_isready -U postgres -d your_db_name]
+  ```
+
+### 3. Docker volume
+
+Rename the Docker volume in `dev/docker-compose.yml`:
+
+```yaml
+volumes:
+  your-project-name-data:
+    name: your-project-name-postgres-data
+```
+
+And update the `volumes:` mapping on the postgres service:
+
+```yaml
+volumes:
+  - your-project-name-data:/var/lib/postgresql/data
+```
+
+Also update the container name:
+
+```yaml
+container_name: your-project-name-postgres
+```
+
+### 4. CORS origin
+
+If you have a frontend, update the CORS origin in `src/main.ts` to match your domain.
+
+### 5. API title and contact
+
+Update `src/config/apiReference/apiReference.config.ts`:
+
+```typescript
+.setTitle('Your Project Name API')
+.setContact('Your Name', 'https://your-url.com', 'your@email.com')
+```
+
+### 6. Environment variables
+
+Review all env vars in `.env.example` and update defaults as needed:
+
+| Variable | What to change |
+|----------|---------------|
+| `JWT_SECRET` | Generate a strong random secret |
+| `DATABASE_URL` | Match your new DB name |
+| `DATABASE_NAME` | Match your new DB name |
+
+### 7. Application roles
+
+If your app needs different roles, update `src/shared/enums/applicationRoles.enum.ts`:
+
+```typescript
+export enum ApplicationRoles {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  // Add your roles here
+}
+```
+
+### 8. Search and replace
+
+Do a global search for `referer` across the project to catch any remaining references:
+
+```bash
+grep -r "referer" --include="*.ts" --include="*.yml" --include="*.json" --include="*.env*" .
+```
+
+Replace with your project name as appropriate.
+
 ## How to run
 
 This project uses [NestJS](https://docs.nestjs.com/).
