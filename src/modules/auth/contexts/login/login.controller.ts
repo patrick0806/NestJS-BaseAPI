@@ -1,5 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 
 import { API_TAGS } from '@shared/constants';
@@ -15,10 +19,21 @@ import { TokenResponseDto } from './schemas/login.schema';
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @ApiOperation({ summary: 'Login' })
+  @ApiOperation({
+    summary: 'Authenticate a user',
+    description:
+      "Validates the supplied credentials against the `users` table and returns a signed JWT. " +
+      'Send the returned token in the `Authorization: Bearer <token>` header on every protected route. ' +
+      'This endpoint is rate-limited at the proxy layer in production.',
+  })
+  @ApiBody({
+    type: LoginRequestDto,
+    description: 'Credentials payload. Both `email` and `password` are required.',
+  })
   @ZodResponse({
     status: 200,
-    description: 'Login successful',
+    description:
+      'Login successful. The response body contains the JWT access token and its lifetime.',
     type: TokenResponseDto,
   })
   @Post()

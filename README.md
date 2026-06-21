@@ -27,26 +27,85 @@ To run this project in dev mode you need to follow these steps
 
 ### Configure the database
 
-Set `DATABASE_URL` in your environment (or a `.env` file at the project root). The default used by `src/config/env/index.ts` is:
+The template ships with a dockerised PostgreSQL for development — see the [Dev database](#dev-database) section below for the full workflow. If you already have a Postgres reachable via `DATABASE_URL`, you can skip the Docker setup and just run the migrations.
 
-```
-postgres://postgres:postgres@localhost:5432/referer
-```
+## Dev database
 
-Create the database if it doesn't exist yet:
+A dockerised PostgreSQL is provided in `dev/`. The default host port is **5432** (mapped to 5432 inside the container). If something else is already using 5432 on your machine — for example a system Postgres, a previous project's container, or a leftover like `elevo_postgres` — see the [Port conflict](#port-conflict) note below.
 
-```bash
- createdb referer
-```
-
-(or `psql -U postgres -c "create database referer;"`)
-
-Then apply migrations and seed the database:
+### Quick start
 
 ```bash
- npm run db:migrate
- npm run db:seed
+# 1. Configure the dev DB container
+cp dev/.env.example dev/.env
+
+# 2. Bring up the database
+docker compose -f dev/docker-compose.yml up -d
+
+# 3. Configure the app
+cp .env.example .env
+
+# 4. Apply migrations and seed
+npm run db:migrate
+npm run db:seed
+
+# 5. Start the app
+npm run start:dev
+
+# 6. Verify the health check
+curl http://localhost:3000/api/v1/health
+# → the `database` key should report `status: 'up'`
 ```
+
+### Dev database env vars (`dev/.env`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `POSTGRES_USER` | `postgres` | DB user inside the container |
+| `POSTGRES_PASSWORD` | `postgres` | DB password inside the container |
+| `POSTGRES_DB` | `referer` | DB name |
+| `POSTGRES_PORT` | `5432` | Host port mapped to the container's 5432 |
+
+### App-side env vars (root `.env`)
+
+| Variable | Default | Description |
+|---|---|---|
+| `DATABASE_URL` | `postgres://postgres:postgres@localhost:5432/referer` | Drizzle connection string |
+| `DATABASE_HOST` | `localhost` | DB host (used by `pg`-style drivers) |
+| `DATABASE_PORT` | `5432` | DB port |
+| `DATABASE_USER` | `postgres` | DB user |
+| `DATABASE_PASSWORD` | `postgres` | DB password |
+| `DATABASE_NAME` | `referer` | DB name |
+
+### Port conflict
+
+If `docker compose -f dev/docker-compose.yml up -d` fails on `bind: address already in use` for port 5432, another Postgres is occupying it (common offenders: a system Postgres service, an older project container, or an unrelated `elevo_postgres` that's been running for a while). The fix is to remap the dev DB to a free host port and point the app at it.
+
+For example, if you also have a container called `elevo_postgres` on 5432:
+
+```bash
+# dev/.env
+POSTGRES_PORT=5433
+
+# .env
+DATABASE_URL=postgres://postgres:postgres@localhost:5433/referer
+```
+
+Then run `docker compose -f dev/docker-compose.yml up -d` again. The DB will be reachable on `localhost:5433`.
+
+### Tear down
+
+```bash
+# Stop the container but keep the data volume
+docker compose -f dev/docker-compose.yml down
+
+# Stop AND drop the data volume (full reset)
+docker compose -f dev/docker-compose.yml down -v
+```
+
+### Persistent data
+
+The DB data lives in a named Docker volume `referer-api-postgres-data`. It survives `down` and is only removed by `down -v`.
 
 ### Run project
 
@@ -201,4 +260,66 @@ We have the common logic of the application and shared things like entities and 
 2. Wrap it with `createZodDto(...)` to produce the DTO class used by `@Body()`, `@Query()`, etc.
 3. Add `@ZodResponse({ status, description, type: ResponseDto })` to the controller method to emit OpenAPI metadata.
 4. The global `ZodValidationPipe` (registered in `app.module.ts`) will validate the request automatically and throw `ValidationException` (a Zod-aware subclass) on failure, which the existing `ValidationExceptionFilter` turns into the project's standard `ExceptionDTO` error response.
+
+## Documenting schemas and endpoints (so descriptions show up in Scalar)
+
+Every property and every endpoint should have a human-readable description — Scalar renders them as the "what is this field?" hint and the "what does this endpoint do?" paragraph in the reference UI.
+
+### On a Zod property or whole schema
+
+Use the Zod-native `.describe(...)` method. It works on both fields and the top-level object schema, and the description flows through `nestjs-zod` → `cleanupOpenApiDoc` into the OpenAPI document that Scalar renders.
+
+```ts
+import { z } from 'zod';
+
+export const CreateUserSchema = z
+  .object({
+    email: z
+      .string()
+      .email()
+      .describe("User's email address. Must be unique across the `users` table."),
+    password: z
+      .string()
+      .min(8)
+      .describe('Plain-text password. Will be hashed with bcrypt before persisting.'),
+  })
+  .describe('Payload to create a new user account.');
+```
+
+### On a class-based DTO (`@ApiProperty`)
+
+For DTOs that aren't Zod-based (e.g. `HealthCheckResponseDTO`), use the `description` field of `@ApiProperty`:
+
+```ts
+@ApiProperty({
+  description: 'Top-level status. `ok` when every indicator is up.',
+  example: 'ok',
+})
+status: 'ok' | 'error' | 'shutting_down' | string;
+```
+
+### On an endpoint (`@ApiOperation`, `@ApiBody`, `@ZodResponse`, `@ApiResponse`)
+
+Each decorator accepts a `description` (and a shorter `summary`) string:
+
+```ts
+@ApiOperation({
+  summary: 'Authenticate a user',
+  description:
+    "Validates the supplied credentials against the `users` table and returns a signed JWT. " +
+    'Send the returned token in the `Authorization: Bearer <token>` header on every protected route.',
+})
+@ApiBody({
+  type: LoginRequestDto,
+  description: 'Credentials payload. Both `email` and `password` are required.',
+})
+@ZodResponse({
+  status: 200,
+  description: 'Login successful. The body contains the JWT access token and its lifetime.',
+  type: TokenResponseDto,
+})
+@Post()
+```
+
+For non-2xx responses on endpoints that are *excluded* from the global `defaultResponses` (currently only `/api/v1/health`), declare them explicitly with `@ApiResponse` / `@ApiServiceUnavailableResponse` etc. For every other endpoint, the standard error responses (400/401/403/404/409/500) are added automatically by `ApiReferenceConfig` with the descriptions in `src/config/apiReference/defaultResponses.ts`.
 

@@ -26,7 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix(API_BASE_PATH);
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   const apiReferenceConfig = new ApiReferenceConfig();
-  apiReferenceConfig.setupApiReference(`${API_BASE_PATH}/v1/docs`, app);
+  apiReferenceConfig.setupApiReference(`${API_BASE_PATH}/docs`, app);
 
   app.useGlobalInterceptors(new BuildResponseInterceptor());
   app.useGlobalFilters(
