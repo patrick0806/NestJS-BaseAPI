@@ -220,9 +220,6 @@ Here we have our business logic and unit tests. Modules are contexts of a module
   /modules
     /contexts
         /create
-            /dtos
-                request.dto.ts
-                response.dto.ts
             /schemas
                 request.schema.ts
                 response.schema.ts
@@ -248,6 +245,9 @@ We have the common logic of the application and shared things like entities and 
             index.ts
         /dtos
             error.dto.ts
+            index.ts
+        /repostiories
+            base.repository.ts
             index.ts
         /exceptions
             validation.exception.ts

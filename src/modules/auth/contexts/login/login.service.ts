@@ -5,7 +5,6 @@ import type { User } from '@config/database/schema/users';
 import { env } from '@config/env';
 
 import { REFRESH_TOKEN_REPOSITORY, RefreshTokenRepository } from '@shared/repositories';
-
 import { generateRefreshToken, verifyPassword } from '@shared/utils';
 
 

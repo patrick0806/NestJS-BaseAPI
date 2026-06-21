@@ -4,7 +4,6 @@ import {
   REFRESH_TOKEN_REPOSITORY,
   RefreshTokenRepository,
 } from '@shared/repositories';
-
 import { hashRefreshToken } from '@shared/utils';
 
 

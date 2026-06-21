@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { User } from '@config/database/schema/users';
 
 import { RefreshTokenRepository } from '@shared/repositories';
-
 import * as shared from '@shared/utils';
 
 import { LoginService } from '../login.service';

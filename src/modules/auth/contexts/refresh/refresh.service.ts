@@ -8,7 +8,6 @@ import {
   REFRESH_TOKEN_REPOSITORY,
   RefreshTokenRepository,
 } from '@shared/repositories';
-
 import { generateRefreshToken, hashRefreshToken } from '@shared/utils';
 
 

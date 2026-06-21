@@ -4,7 +4,7 @@ import type { RefreshToken } from '@config/database/schema/refreshTokens';
 
 import { RefreshTokenRepository } from '@shared/repositories';
 
-import { RefreshService } from './refresh.service';
+import { RefreshService } from '../refresh.service';
 
 const RAW = 'raw-refresh-token';
 const HASH = `hash-of-${RAW}`;
