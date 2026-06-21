@@ -1,0 +1,37 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "backend-engineer": {
+      "description": "Senior backend engineer specializing in Node.js, TypeScript, NestJS, PostgreSQL, and API architecture.",
+      "mode": "primary",
+      "color": "secondary"
+    },
+    "code-reviewer": {
+      "description": "Senior software architect performing code reviews without modifying code.",
+      "mode": "subagent",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "build": {
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "plan": {
+      "mode": "primary",
+      "permission": {
+        "edit": "ask",
+        "bash": "ask"
+      }
+    }
+  },
+  "default_agent":"backend-engineer"
+}
