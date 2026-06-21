@@ -8,6 +8,13 @@
       "when": 1782001806469,
       "tag": "0000_public_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782018642125,
+      "tag": "0001_fine_roulette",
+      "breakpoints": true
     }
   ]
 }

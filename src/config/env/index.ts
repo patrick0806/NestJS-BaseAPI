@@ -2,7 +2,9 @@ export const env = {
   PORT: process.env.PORT || 3000,
   NODE_ENV: process.env.NODE_ENV || 'development',
   JWT_SECRET: process.env.JWT_SECRET || 'secret',
-  JWT_EXPIRATION: process.env.JWT_EXPIRATION || '1d',
+  JWT_EXPIRATION: process.env.JWT_EXPIRATION || '15m',
+  REFRESH_TOKEN_EXPIRATION:
+    process.env.REFRESH_TOKEN_EXPIRATION || '7d',
   DATABASE_URL:
     process.env.DATABASE_URL ||
     'postgres://postgres:postgres@localhost:5432/referer',

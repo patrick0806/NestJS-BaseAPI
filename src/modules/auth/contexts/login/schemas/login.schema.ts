@@ -16,7 +16,7 @@ export const LoginSchema = z
       ),
   })
   .describe(
-    'Credentials used to authenticate a user. Returns a JWT access token on success.',
+    'Credentials used to authenticate a user. Returns a short-lived JWT access token and a single-use refresh token on success.',
   );
 
 export class LoginRequestDto extends createZodDto(LoginSchema) {}
@@ -31,11 +31,22 @@ export const TokenResponseSchema = z
     expiresIn: z
       .string()
       .describe(
-        'Token lifetime in the format expected by `jsonwebtoken` (e.g. `1d`, `12h`, `900s`).',
+        'Access token lifetime in the format expected by `jsonwebtoken` (e.g. `15m`, `1h`).',
+      ),
+    refreshToken: z
+      .string()
+      .describe(
+        'Opaque single-use refresh token. Send it to `POST /api/v1/auth/refresh` to obtain a new access token and a new refresh token. The previous refresh token is revoked on each rotation.',
+      ),
+    refreshExpiresAt: z
+      .iso
+      .datetime()
+      .describe(
+        'ISO-8601 timestamp at which the refresh token stops being valid.',
       ),
   })
   .describe(
-    'Successful login response. The token expires after the time described by `expiresIn`.',
+    'Successful login response. Both tokens are required to access protected resources. Refresh tokens are single-use — reusing a revoked refresh token invalidates every active session for the user.',
   );
 
 export class TokenResponseDto extends createZodDto(TokenResponseSchema) {}
