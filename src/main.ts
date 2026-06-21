@@ -1,5 +1,5 @@
 import helmet from '@fastify/helmet';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -9,7 +9,6 @@ import {
 import { ApiReferenceConfig } from '@config/apiReference/apiReference.config';
 
 import { API_BASE_PATH } from '@shared/constants';
-import { ValidationException } from '@shared/exceptions';
 import {
   HttpExceptionFilter,
   ValidationExceptionFilter,
@@ -27,17 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix(API_BASE_PATH);
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
   const apiReferenceConfig = new ApiReferenceConfig();
-  apiReferenceConfig.setupApiReference(`${API_BASE_PATH}/docs`, app);
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      exceptionFactory: (validationErrors) => {
-        throw new ValidationException(validationErrors);
-      },
-    }),
-  );
+  apiReferenceConfig.setupApiReference(`${API_BASE_PATH}/v1/docs`, app);
 
   app.useGlobalInterceptors(new BuildResponseInterceptor());
   app.useGlobalFilters(

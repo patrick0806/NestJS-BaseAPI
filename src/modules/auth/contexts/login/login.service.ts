@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 import { LocalStrategy } from '@modules/auth/strategies/local.strategy';
 
-import { LoginRequestDTO } from './dtos/request.dto';
+import { LoginRequestDto } from './dtos/request.dto';
 
 @Injectable()
 export class LoginService {
   constructor(private localStrategy: LocalStrategy) {}
-  async execute(loginData: LoginRequestDTO): Promise<any> {
+  async execute(loginData: LoginRequestDto) {
     await this.localStrategy.validate(loginData.email, loginData.password);
-    return 'Hello World';
+    return { accessToken: 'placeholder', expiresIn: '1d' };
   }
 }

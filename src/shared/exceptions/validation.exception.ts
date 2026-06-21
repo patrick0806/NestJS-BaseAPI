@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
+import { ZodError } from 'zod';
 
 export class ValidationException {
   name: string;
@@ -11,21 +11,14 @@ export class ValidationException {
     reason: string;
   }>;
 
-  constructor(validationErrors: ValidationError[]) {
-    const fieldsErrors = validationErrors.flatMap((error) => {
-      const notFollowedRules = Object.keys(error.constraints);
-      return notFollowedRules.map((rule) => {
-        return {
-          name: error.property,
-          reason: error.constraints[rule],
-        };
-      });
-    });
-
+  constructor(zodError: ZodError) {
+    this.fields = zodError.issues.map((issue) => ({
+      name: issue.path.join('.') || 'body',
+      reason: issue.message,
+    }));
     this.name = 'ValidationException';
     this.error = 'Invalid params';
     this.message = 'Invalid params send in request';
     this.status = HttpStatus.BAD_REQUEST;
-    this.fields = fieldsErrors;
   }
 }

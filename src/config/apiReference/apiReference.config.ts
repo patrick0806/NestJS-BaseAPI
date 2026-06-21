@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
+import { cleanupOpenApiDoc } from 'nestjs-zod';
 
 import { defaultResponses } from './defaultResponses';
 
@@ -19,13 +20,14 @@ export class ApiReferenceConfig {
     .build();
 
   setupApiReference(path: string, app: INestApplication<any>) {
-    const document = this.createDocument(app);
+    let document = this.createDocument(app);
     this.defineGlobalResponses({
       document,
       excludedPaths: ['/api/v1/health'],
       methods: ['get', 'post', 'put', 'patch', 'delete'],
       responses: defaultResponses,
     });
+    document = cleanupOpenApiDoc(document);
     app.use(
       path,
       apiReference({
